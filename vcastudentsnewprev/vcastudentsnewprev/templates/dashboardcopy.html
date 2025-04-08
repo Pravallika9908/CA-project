@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+
+    <link rel="stylesheet" href="/static/dashboardstyle.css"> <!-- Updated line -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js"></script>
+    <script src="/static/cdnjs/select2.min.js"></script>
+    <title>BA Talks</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        /* Light mode styles */
+        body.light-mode {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
+
+
+
+
+    <!-- Include the header directly -->
+    <!--{% include 'header.html' %} -->
+
+    <!-- Header -->
+    <div class="header">
+        <div class="user-profile">
+            <img src="/static/img/usericon.png" alt="User Profile">
+            <span id="username">{{ user_info[0] | capitalize }}
+            </span>
+        </div>
+        <div class="action-buttons">
+            <a href="#" title="Notifications"><i class="fas fa-bell"></i></a>
+            <a  id="testresults" href="{{ url_for('get_testresults') }}" previewlistener="true" title="Test Results"><i class="fas fa-calendar-alt"></i></a>
+            <a href="{{ url_for('subscription') }}" title="Subscribe"><i class="fas fa-rupee-sign"></i></a>
+            <a id='logoutButton' href="{{ url_for('logout') }}" title="Signout"><i class="fas fa-sign-out-alt"></i></a>
+
+            <!-- <a href="#" title="Notifications" onclick="goBack()"><i class="fas fa-arrow-left"></i></a>
+            <a href="#" title="Reminders" onclick="goForward()"><i class="fas fa-arrow-right"></i></a> -->
+        </div>
+    </div>
+    </div>
+    
+
+    <!-- Main content of the dashboard goes here -->
+
+    <div id="dashboard-content" class="light-mode">
+        <div id="Container" class="bg-light">
+            <div class="row">
+                <div class="col-md-2 "></div>
+                <!-- <div>
+                    <button value= "testresults" id="testresults" onclick = "TestResults()" >testresults</button> -->
+                    <!-- <a id="testresults" href="{{ url_for('get_testresults') }}">Test Results</a> -->
+                <!-- </div> --> 
+                <div id="countdown-timer"></div>
+                <div><label for="darkModeToggle">Dark Mode</label>
+                <input type="checkbox" id="darkModeToggle"></div>
+                
+
+                <div>
+                    <!-- <button value= "testresults" id="testresults" onclick = "TestResults()" >testresults</button> -->
+                    <h4 id="timeline"></h4>
+
+                </div>
+                <div>
+                    <!-- <a id="interactiveresults">Interactive Test Results</a> -->
+                    <a  id="interactiveresults" href="{{ url_for('get_interactiveresults') }}"  title="Interactive Test Results">Interactive Test Results</a>
+
+                </div>
+                <button id="interactive" class="btn btn-primary" onclick="toggleInteractive()">Start Interactive Mode</button>
+
+                <div id="dropdownContainer" style="display: none;">
+                    <label for="timeInterval">Select Time Interval:</label>
+                    <select id="timeInterval">
+                      <option value="1">1 minutes</option>
+                      <option value="60">1 hour</option>
+                      <option value="90">1 and half hour</option>
+                      <option value="120">2 hour</option>
+
+                    </select>
+                    <button id="submitBtn">Submit</button>
+                  </div>
+                  <div id="selected-timer">
+
+                  </div>
+                  <div>
+                    <h1 id="question_inter"></h1>
+                    <div id="attemptno"></div>
+                    <input type="hidden" class="answer_inter" id="answer_inter"></input>
+                    <textarea id="inputtext_inter" class="inputtext_inter" name="textarea" rows="4" style="display:none" placeholder="Enter text here..."></textarea>
+                    <button id="submitButton_inter" class="submitButton_inter btn btn-primary" style="display:none" onclick="handleTypedAnswer_inter()">Submit</button>
+                  </div>
+                  
+
+                
+                <div class="col-md-8">
+                    <div class="kastam" id="dashboard-content">
+                        <h2>Start Your Test Round</h2>
+                        <div id="user-info" class="bg-light">
+                            <p>User: <span id="username1">{{ user_info[0] }}</span></p>
+                            <p>Level: <span id="userClass">{{ user_info[2] }}</span></p>
+                            <!-- <p>Subscription Status: <span id="subscriptionStatus">{{ user_info[1] }}</span></p> -->
+                        </div>
+                        <!-- Subject Dropdown -->
+                        <label for="subjectDropdown">Select a Subject:</label>
+
+                        <select class="form-control select2 custom-dropdown " id="subjectDropdown"
+                            name="subjectDropdown">
+                            <option value="">---Select---</option>
+                            {% for subject in subjects %}
+                            <option value="{{ subject[0] }}">{{ subject[1] }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <div>
+
+                        </div>
+
+                        <!-- Chapter Dropdown -->
+                        <label for="chapterDropdown">Select a Chapter:</label>
+                        <select class="form-control select2" id="chapterDropdown" name="chapterDropdown">
+                            <option value="">---Select---</option>
+                        </select>
+
+
+                        <!-- Display selected subject and chapter -->
+                        <p>Selected Subject: <span id="selectedSubjectDisplay">None</span></p>
+                        <p>Selected Chapter: <span id="selectedChapterDisplay">None</span></p>
+
+
+                        <!-- Questions Container -->
+                        <div id="questionsContainer">
+                            <h3 style="display:none">Selected Questions:</h3>
+                            <div class="" id="questionList" style="display:none"></div>
+
+                            <!-- Start and Stop buttons -->
+                            <h1 id="question"></h1>
+                            <input type="hidden" class="answer" id="answer"></input>
+
+
+                            <textarea id="inputtext" class="inputtext" name="textarea" rows="4" style="display:none" placeholder="Enter text here..."></textarea>
+                            <button id="submitButton" class="submitButton btn btn-primary" style="display:none" onclick="handleTypedAnswer()">Submit</button>
+
+
+                            <button id="startButton" class="startButton btn btn-success" style="display:none" onclick="startQuestions()">Start</button>
+
+                            <button id="stopButton" class="stopButton btn btn-primary" style="display:none"
+                                onclick="stopQuestions()">Stop</button>
+                                <div id="answerModeModal" class="modal" style="display:none">
+                                    <div class="modal-content mode">
+                                        <p id="textanswer" >Choose your answer mode:</p>
+                                        <button value= "speak" id="speakModeBtn" onclick="selectAnswerMode('speak')">Speak</button>
+                                        <button value= "type" id="typeModeBtn" onclick="selectAnswerMode('type')">Type</button>
+                                    </div>
+                                </div>
+                                <button id="selectModeButton" class="btn btn-primary" style="display:none" onclick="openAnswerModeModal()">Select Mode</button>
+
+
+                                
+                                
+
+                            
+                                <!-- Your existing content goes here -->
+                            
+                                <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+                                <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js"></script>
+
+                            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                            <button id="submitButton" class="submitButton btn btn-primary" style="display:none">Submit
+                                Answer</button>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../static/js/oldform.js"></script>
+    <script src="../static/js/oldformtwo.js"></script>
+    <!-- <script>
+        // JavaScript code for microphone access
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(function(stream) {
+            console.log('Microphone access granted!');
+          })
+          .catch(function(err) {
+            console.error('Error accessing microphone:', err);
+          });
+      </script> -->
+    
+    
+    
+
+    
+    <script type="text/javascript">
+
+$(document).on("click", "#testresults", function (event) 
+        {
+           stopSpeech()
+        });
+
+        
+$(document).on("click", "#interactiveresults", function (event) 
+        {
+           stopSpeech()
+        });
+
+        
+
+    </script>
+    <script type="text/javascript">
+
+        // Add an event listener for the logout button
+        $(document).on("click", "#logou", function (event) 
+        {
+            event.preventDefault();
+
+            logout();
+        });
+        
+
+        function logout() {
+            // alert("Logout successful");
+             window.location.reload(true);
+        }
+    </script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script>
+        
+        
+    </script>
+
+
+    <script>
+        
+    </script>
+    
+
+
+    <script type="text/javascript">
+
+        // Add an event listener for the logout button
+        $(document).on("click", "#logoutButton", function (event) {
+            event.preventDefault();
+
+            logout();
+        });
+
+        function logout() {
+            alert("Logout successful");
+            window.location.reload(true);
+        }
+    </script>
+    
+
+    <script>
+        
+    </script>
+    
+    
+    <script>
+        
+
+        
+    </script>
+
+<script>
+    
+</script>
+
+<script>
+    
+</script>
+<script>
+    
+</script>
+<script>
+   
+
+    
+</script>
+
+</body>
+
+</html>

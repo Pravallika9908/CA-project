@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+
+
+
+
+  <link rel="stylesheet" href="static/css/stylee.css" />
+  <title>BA Talks</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="forms-container">
+      <div class="signin-signup">
+        <!-- <form action="/login" class="sign-in-form" method="post" id="creds"> -->
+        <form action="dashboard" class="sign-in-form">
+          <div id="login_error" style="color: red;" class="text-danger error-message"></div>
+          <h2 class="title">Welcome back!</h2>
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input id="username" type="text" placeholder="Username" />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input id="password" type="password" placeholder="Password" />
+          </div>
+          <!-- <input type="submit" value="Login" class="btn solid" /> -->
+          <button id="login" class="btn btn-success">Login</button>
+          <a href="{{ url_for('forgot_password') }}">Forgot Password</a>
+          <!-- <button id="" class=""><a href="{{ url_for('forgot_password') }}">Forgot Password</a></button> -->
+          <a id='logoutButton' href="{{ url_for('logout') }}"><i class=""></i></a>
+
+
+          <p class="social-text">Developed by BAtalks Pvt LTD</p>
+          <div class="social-media">
+            <img class="social-icon" src="/static/img/logo.png" alt="logo">
+
+          </div>
+
+        </form>
+        <form action="dashboard" class="sign-up-form">
+          <h2 class="title">Sign up</h2>
+          <div class="input-field">
+            <i class="fas fa-user"></i>
+            <input id="username_r" type="text" placeholder="Username" />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-envelope"></i>
+            <input id="email" type="email" placeholder="Email" />
+            <span id="emailError" class="error" style="color: red;"></span>
+            
+          </div>
+          <div class="input-field">
+            <i class="fas fa-lock"></i>
+            <input id="password_r" type="password" placeholder="Password" />
+          </div>
+          <div class="input-field">
+            <i class="fas fa-phone"></i>
+            <input id="mobile" type="tel" pattern="\d*" maxlength="10" placeholder="Mobile Number" />
+            <span id="mobileError" class="error" style="color: red;"></span>
+          </div>
+          <div class="">
+            <label>
+                <input type="radio" id="class_intermediate" name="class_name" value="CA_intermediate" />
+                <span>CA Inter</span>
+            </label>
+            <label>
+                <input type="radio" id="class_final" name="class_name" value="CA_final" />
+                <span>CA Final</span>
+            </label>
+            <span id="classError" class="error" style="color: red;"></span>
+          </div>
+          <!-- <input type="submit" class="btn" value="Sign up" /> -->
+          <button id="register" class="btn btn-success">Sign up</button>
+          <p class="social-text">Developed by BAtalks Pvt LTD</p>
+          <div class="social-media">
+            <img class="social-icon" src="/static/img/logo.png" alt="logo">
+            
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="panels-container">
+      <div class="panel left-panel">
+        <div class="content">
+          <h3>New here ?</h3>
+          <p>
+            Welcome to BATalks.
+            Unlock a world of your personal AI voice assistant..
+          </p>
+          <button class="btn transparent" id="sign-up-btn">
+            Sign up
+          </button>
+        </div>
+        <img src="static/img/log.svg" class="image" alt="" />
+      </div>
+      <div class="panel right-panel">
+        <div class="content">
+          <h3>One of us ?</h3>
+          <p>
+            "Great to see you again! Sign in now to continue where you left off."
+            Time to reconnect!
+          </p>
+          <button class="btn transparent" id="sign-in-btn">
+            Sign in
+          </button>
+        </div>
+        <img src="static/img/register.svg" class="image" alt="" />
+      </div>
+    </div>
+  </div>
+
+  <script src="static/app.js">
+  </script>
+
+<script>
+  function validatePhoneNumber(phone) {
+      const regex = /^\d{10}$/;
+      return regex.test(phone);
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+      const mobileField = document.getElementById('mobile');
+      const mobileError = document.getElementById('mobileError');
+
+      mobileField.addEventListener('input', function(event) {
+          let input = event.target.value;
+
+          if (input.length > 10) {
+              input = input.slice(0, 10); // Limit the input to 10 characters
+              mobileField.value = input; // Update the field value
+          }
+
+          if (!/^\d*$/.test(input)) {
+              mobileField.value = input.replace(/\D/g, ''); // Remove non-numeric characters
+          }
+
+          if (input.length !== 10 || !validatePhoneNumber(input)) {
+              mobileError.textContent = 'Invalid phone number.';
+          } else {
+              mobileError.textContent = ''; // Clear the error message if valid
+          }
+      });
+  });
+</script>
+
+<script>
+  function validateEmail(email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(email);
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+      const emailField = document.getElementById('email');
+      const emailError = document.getElementById('emailError');
+
+      emailField.addEventListener('input', function(event) {
+          const input = event.target.value;
+
+          if (!validateEmail(input)) {
+              emailError.textContent = 'Invalid email format. Please enter a valid email.';
+          } else {
+              emailError.textContent = ''; // Clear the error message if valid
+          }
+      });
+  });
+</script>
+
+<script>
+  function validatePassword(password) {
+    // Password should be at least 8 characters long
+    if (password.length < 8) {
+        return false;
+    }
+
+    // Check for a combination of letters, special characters, and numbers
+    const letterRegex = /[a-zA-Z]/;
+    const numberRegex = /[0-9]/;
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (
+        !letterRegex.test(password) ||
+        !numberRegex.test(password) ||
+        !specialCharRegex.test(password)
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const passwordField = document.getElementById('password_r');
+    const passwordError = document.getElementById('passwordError');
+
+    passwordField.addEventListener('input', function(event) {
+        const input = event.target.value;
+
+        if (!validatePassword(input)) {
+            passwordError.textContent = 'Password must be at least 8 characters long and include letters, numbers, and special characters.';
+        } else {
+            passwordError.textContent = ''; // Clear the error message if valid
+        }
+    });
+});
+
+// ... rest of your code ...
+
+</script>
+
+<script>
+  $(document).on("click", "#register", function (event) {
+    event.preventDefault();
+
+    var username = $("#username_r").val();
+    var password = $("#password_r").val();
+    var email = $("#email").val();
+    var mobile = $("#mobile").val();
+
+    // Validate the radio buttons
+    var class_intermediate_checked = $("#class_intermediate").prop("checked");
+    var class_final_checked = $("#class_final").prop("checked");
+
+    if (!class_intermediate_checked && !class_final_checked) {
+        $("#classError").text("Please select your class level.");
+        return false;
+    } else {
+        $("#classError").text(""); // Clear the error message if a level is selected
+    }
+
+    var class_name = class_intermediate_checked ? "CA_intermediate" : "CA_final";
+
+    // Validate email and mobile fields
+    if (!validateEmail(email)) {
+        $("#emailError").text("Invalid email format. Please enter a valid email.");
+        return false;
+    } else {
+        $("#emailError").text(""); // Clear the error message if valid
+    }
+
+    if (!validatePhoneNumber(mobile)) {
+        $("#mobileError").text("Invalid phone number.");
+        return false;
+    } else {
+        $("#mobileError").text(""); // Clear the error message if valid
+    }
+
+    // Validate password field
+    if (!validatePassword(password)) {
+        $("#passwordError").text("Password must be at least 8 characters long and include letters, numbers, and special characters.");
+        return false;
+    } else {
+        $("#passwordError").text(""); // Clear the error message if valid
+    }
+
+    const data = {
+        username: username,
+        password: password,
+        email: email,
+        mobile: mobile,
+        class_name: class_name
+    };
+
+    register(data);
+  });
+
+  // ... rest of your code ...
+
+
+  $(document).on("click", "#login", function (event) {
+      event.preventDefault();
+
+      var username = document.getElementById("username").value;
+      var password = document.getElementById("password").value;
+
+      if (username === "" || password === "") {
+          alert("Please enter both username and password");
+          return false;
+      }
+
+      CheckLogin(username, password);
+  });
+
+  function register(data) {
+      fetch('/register', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(responseData => {
+          if (responseData.status === "0") {
+              alert(responseData.message);
+          } else if (responseData.status === "1") {
+              alert(responseData.message);
+              window.location.href = '/';
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+  }
+
+  function CheckLogin(username, password) {
+      // Existing login code
+  }
+
+  // Add the rest of your JavaScript code here...
+</script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      // Check if the user is logged in when the page loads
+      // checkLoginStatus();
+
+      // Add an event listener for the popstate event
+      window.addEventListener('popstate', function (event) {
+        // Check the login status when the user navigates back using the browser's back button
+        // checkLoginStatus();
+      });
+
+      // Add an event listener for the logout button
+      $(document).on("click", "#logoutButton", function (event) {
+        event.preventDefault();
+        logout();
+      });
+    });
+
+    function checkLoginStatus() {
+      // Retrieve the login status from localStorage
+      var isLoggedIn = localStorage.getItem('isLoggedIn');
+
+      // If the user is logged in, show a confirmation dialog
+      if (isLoggedIn === 'true') {
+        var confirmLogout = confirm("Going back will log you out. Do you want to proceed?");
+        if (confirmLogout) {
+          logout();
+        } else {
+          // If the user chooses not to logout, push a new state to prevent further popstate events
+          history.pushState(null, null, window.location.href);
+        }
+      }
+    }
+
+    function logout() {
+      // Clear the login status from localStorage
+      localStorage.setItem('isLoggedIn', 'false');
+
+      alert("Logout successful");
+      window.location.reload(true);
+    }
+    $(document).on("click", "#register", function (event) {
+      event.preventDefault(); // Prevents the default form submission behavior
+
+      var username = $("#username_r").val();
+      var password = $("#password_r").val();
+      var email = $("#email").val();
+      var mobile = $("#mobile").val();
+      var class_intermediate_checked = $("#class_intermediate").prop("checked");
+      var class_final_checked = $("#class_final").prop("checked");
+
+      if (!class_intermediate_checked && !class_final_checked) {
+          $("#classError").text("Please select your class level.");
+          return false;
+      }
+
+      var class_name = class_intermediate_checked ? "CA_intermediate" : "CA_final";
+
+
+      if (username === "" || password === "" || email === "" || mobile === ""||class_name === "") {
+        alert("Please Fill all the fields");
+        return false; // Prevents form submission
+
+      }
+      const data = {
+        username: username,
+        password: password,
+        email: email,
+        mobile: mobile,
+        class_name: class_name
+      };
+      register(data);
+      // return false;
+
+    });
+    function register(data) {
+
+      fetch('/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Specify the content type as JSON
+        },
+        body: JSON.stringify(data), // Convert the data object to a JSON string
+      })
+        .then(response => response.json())
+        .then(responseData => {
+          // alert(responseData.status)
+
+          // Handle the response data here
+          if (responseData.status === "0") {
+            alert(responseData.message)
+            return false
+          } else if (responseData.status === "1") {
+            alert(responseData.message)
+            window.location.href = '/';
+
+          }
+        })
+    }
+
+    
+
+    function CheckLogin(username, password) {
+      // alert()
+      const data = {
+        username: username,
+        password: password
+      };
+
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Specify the content type as JSON
+        },
+        body: JSON.stringify(data), // Convert the data object to a JSON string
+      })
+        .then(response => response.json())
+        .then(responseData => {
+          // alert(responseData.status)
+          // Handle the response data here
+          if (responseData.status === "0") {
+
+            $("#login_error").html(responseData.message);
+            // return false;
+          } else if (responseData.status === "1") {
+            // alert(responseData.username)
+            window.location.href = '/dashboard';
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Handle the error here
+        });
+    }
+    // CheckLogin(username,password)
+
+  </script>
+  
+
+
+
+</body>
+
+</html>

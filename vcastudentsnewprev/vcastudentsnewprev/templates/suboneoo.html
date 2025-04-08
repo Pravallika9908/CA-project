@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>BAtalks</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="static/assets/vendors/mdi/css/materialdesignicons.min.css">
+  
+  <link rel="stylesheet" href="static/assets/css/demo/style.css">
+  <link rel="stylesheet" href="static/assets/css/demo/clockstyle.css">
+  <link rel="stylesheet" href="static/assets/css/demo/bannerstyles.css">
+  <script>
+    // Disable right-click on the document
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+  </script>
+  <script>
+    if (performance.navigation.type === 2) {
+        // 2 means the page was accessed by navigating back in the browser
+        window.location.href = "{{ url_for('login') }}";
+    }
+  </script>
+  
+  
+</head>
+<body>
+    <script src="static/assets/js/preloader.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
+
+  <div class="body-wrapper">
+    <!-- partial:partials/_sidebar.html -->
+    <aside class="mdc-drawer mdc-drawer--dismissible mdc-drawer--open">
+      <div class="mdc-drawer__header">
+        <a class="brand-logo">
+          <img src="static/assets/images/web_logo.png" alt="BA talks">
+        </a>
+      </div>
+        <div class="mdc-drawer__content">
+          <div class="user-info">
+            <p class="name">{{ user_info[0] | capitalize }}</p>
+            
+          </div>
+          <div class="mdc-list-group">
+            <nav class="mdc-list mdc-drawer-menu">
+              <div class="mdc-list-item mdc-drawer-item">
+                <a class="mdc-drawer-link" href="dashboard">
+                  <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">home</i>
+                  Dashboard
+                </a>
+              </div>
+              {% if user_info and user_info[1] == 1 %}
+                  <div class="mdc-list-item mdc-drawer-item">
+                      <a class="mdc-drawer-link" href="/subarasacibe">
+                          <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">track_changes</i>
+                          Referral Data
+                      </a>
+                  </div>
+              {% endif %}
+  
+              {% if user_info and user_info[1] != 1 %}
+                  <div class="mdc-list-item mdc-drawer-item">
+                      <a class="mdc-drawer-link" href="/subbuttonoo">
+                          <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">track_changes</i>
+                          Subscribe
+                      </a>
+                  </div>
+              {% endif %}
+  
+            
+              <div class="mdc-list-item mdc-drawer-item">
+                <a class="mdc-expansion-panel-link" data-toggle="expansionPanel" data-target="ui-sub-menu">
+                  <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">dashboard</i>
+                  Internactive mode
+                  <i class="mdc-drawer-arrow material-icons">chevron_right</i>
+                </a>
+                <div class="mdc-expansion-panel" id="ui-sub-menu">
+                  <nav class="mdc-list mdc-drawer-submenu">
+                    <div class="mdc-list-item mdc-drawer-item">
+                      <a class="mdc-drawer-link" href="interactiveone">
+                        Activate mode
+                      </a>
+                    </div>
+                    <div class="mdc-list-item mdc-drawer-item">
+                      <a class="mdc-drawer-link" id="interactiveresults" href="{{ url_for('get_interactiveresults') }}"  title="Interactive Test Results">
+  
+                        Interactive results
+                      </a>
+                      <!-- <a  class="mdc-drawer-link" id="interactiveresults" href="{{ url_for('get_interactiveresults') }}"  title="Interactive Test Results">Interactive Test Results</a>-->
+                    </div>
+                  </nav>
+                </div>
+              </div>
+              <div class="mdc-list-item mdc-drawer-item">
+                <a class="mdc-drawer-link" id="testresults" href="{{ url_for('get_testresults') }}" previewlistener="true" title="Test Results">
+                  <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">grid_on</i>
+                  Assessment Report
+                </a>
+              </div>
+              <!--<div class="mdc-list-item mdc-drawer-item">
+              <a class="mdc-drawer-link" href="/button_clicked">
+                  <i class="material-icons mdc-list-item__start-detail mdc-drawer-item-icon" aria-hidden="true">track_changes</i>
+                  2nd interactive
+              </a>
+              </div>-->
+              
+  
+  
+                          
+            </nav>
+          </div>
+          
+          
+        </div>
+    </aside>
+    <!-- partial -->
+    <div class="main-wrapper mdc-drawer-app-content">
+      <!-- partial:partials/_navbar.html -->
+      <header class="mdc-top-app-bar">
+        <div class="mdc-top-app-bar__row">
+          <div class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+            <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button sidebar-toggler">menu</button>
+            <span class="mdc-top-app-bar__title" id="username">Welcome back {{ user_info[0] | capitalize }}!</span>
+                        
+          </div>
+          
+          <div class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end mdc-top-app-bar__section-right">
+            
+            <div class="divider d-none d-md-block"></div>
+            
+            <div class="menu-button-container">
+              <button class="mdc-button mdc-menu-button">
+                <i class="mdi mdi-bell"></i>
+              </button>
+              <div class="mdc-menu mdc-menu-surface" tabindex="-1">
+                <h6 class="title"> <i class="mdi mdi-bell-outline mr-2 tx-16"></i> Notifications</h6>
+                <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
+                  <li class="mdc-list-item" role="menuitem">
+                    <div class="item-thumbnail item-thumbnail-icon">
+                      <i class="mdi mdi-email-outline"></i>
+                    </div>
+                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                      <h6 class="item-subject font-weight-normal">You received a new message</h6>
+                      <small class="text-muted"> 6 min ago </small>
+                    </div>
+                  </li>
+                  
+                </ul>
+              </div>
+            </div>
+            
+            <div class="menu-button-container  d-md-block">
+              <button class="mdc-button mdc-menu-button">
+                <i class="mdi mdi-arrow-down-bold-box"></i>
+              </button>
+              <div class="mdc-menu mdc-menu-surface" tabindex="-1">
+                <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical">
+                  <li class="mdc-list-item" role="menuitem">
+                    <div class="item-thumbnail item-thumbnail-icon-only">
+                      <i class="mdi mdi-lock-outline text-primary"></i>
+                    </div>
+                    <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                      <h6 class="item-subject font-weight-normal">Dark mode</h6>
+                    </div>
+                  </li>
+                  <li class="mdc-list-item" role="menuitem">
+                    <a href="#" id="logoutButton" class="logout-button">
+                      <div class="item-thumbnail item-thumbnail-icon-only">
+                          <i class="mdi mdi-logout-variant text-primary"></i>                      
+                      </div>
+                      <div class="item-content d-flex align-items-start flex-column justify-content-center">
+                          <h6 class="item-subject font-weight-normal">Logout</h6>                      
+                      </div>
+                  </a>
+                  
+                  
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      <!-- partial -->
+
+      <!--<p class="ribbon">
+        <span class="text"><strong class="bold">That's Great:</strong> You'r now about to enter into our Premium User's Family</span>
+      </p>-->
+
+      <!--<h1 class="banner">That's Great!!</h1>-->
+
+      <h4 class="card-title mb-2 mb-sm-0" style="text-align: center;">Scan the QR code below to become a premium user</h4>
+      
+
+
+      
+
+      <div class="page-wrapper mdc-toolbar-fixed-adjust">
+        <main class="content-wrapper">
+          <div class="mdc-layout-grid">
+            <div class="mdc-layout-grid__inner">
+              <div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-3-desktop mdc-layout-grid__cell--span-4-tablet">
+                              
+            <!--<button id='logoutButton' title="Signout">Signout</button>-->
+
+            
+                <div class="mdc-layout-grid__cell--span-12">
+                    <div class="mdc-card">      
+                      
+                      <img src="static/assets/images/qrcodep2.jpeg" alt="qr code">
+
+                    
+
+                        <!--<form><script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_NQB0mhBpPo3MnV" async> </script> </form>-->
+                    
+                    
+                    </div>
+                </div>
+
+                
+              
+            </div>
+          </div>
+
+          <div>
+
+          </div>
+          <h4 class="card-title mb-2 mb-sm-0" style="text-align: center;">Hard to scan the code!! No Worries..</h4>
+          <h4 class="card-title mb-2 mb-sm-0" style="text-align: center;">use the upi id  -  8985161771@ybl</h4>
+        </main>
+        
+      </div>
+    </div>
+  </div>
+  <!-- plugins:js -->
+  
+  <script src="static/assets/js/preloader.js"></script>
+  <script src="/static/assets/vendors/js/vendor.bundle.base.js"></script>
+  <script src="static/assets/js/clockstyleo.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.min.js"></script>
+  <script src="https://momentjs.com/downloads/moment.min.js"></script>
+
+  <!-- endinject -->
+ 
+  <!-- inject:js -->
+  <script src="static/assets/js/material.js"></script>
+  <script src="static/assets/js/misc.js"></script>
+  <script src="static/assets/js/oldform.js"></script>
+  <script src="static/assets/js/oldformtwo.js"></script>
+ 
+
+  <script type="text/javascript">
+
+    $(document).on("click", "#testresults", function (event) 
+            {
+               stopSpeech()
+            });
+    
+            
+    $(document).on("click", "#interactiveresults", function (event) 
+            {
+               stopSpeech()
+            });
+    
+            
+    
+  </script>
+  <script type="text/javascript">
+    // Add an event listener for the logout button
+    $(document).on("click", "#logoutButton", function (event) {
+        event.preventDefault();
+        logout();
+    });
+
+    function logout() {
+        // Clear session and redirect to the logout page
+        sessionStorage.clear();
+        history.pushState(null, null, "{{ url_for('logout') }}");
+        window.location.href = "{{ url_for('logout') }}";
+    }
+</script>
+
+  
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <!-- <script src="static/assets/js/dashboard.js"></script> -->
+  <!-- End custom js for this page-->
+</body>
+</html> 

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script>
+        document.addEventListener('keydown', function(event) {
+            // Check if the pressed key is a function key (F1 to F12)
+            if (event.key.startsWith('F') || event.key.startsWith('f')) {
+                // Prevent the default action (e.g., opening browser help or developer tools)
+                event.preventDefault();
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Interactive Test Results</h1>
+
+    {% if results %}
+        <table id="i_resultsTable" class="display" border="1">
+            <thead>
+                <tr>
+
+                    <th>Question</th>
+                    <th>Correct Answer</th>
+                    <th>User Answer</th>
+                    <th>Similarity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for result in results %}
+                    <tr>
+                        <td>{{ result[2] }}</td>
+                        <td>{{ result[3] }}</td>
+                        <td>{{ result[4] }}</td>
+                        <td>{{ result[5] }}</td>
+                        
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No test results available.</p>
+    {% endif %}
+
+    <!-- Initialize DataTables -->
+    <script>
+        $(document).ready( function () {
+            $('#i_resultsTable').DataTable();
+        });
+    </script>
+</body>
+</html>

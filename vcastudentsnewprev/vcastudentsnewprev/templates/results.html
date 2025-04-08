@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Results</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Flatpickr JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- DataTables JavaScript -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script>
+        // Disable right-click on the document
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .table-container {
+            margin: auto;
+            max-width: 92%;
+            overflow-x: auto; /* Enable horizontal scroll */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 658px) {
+            .table-container {
+                width: 88%;
+            }
+        }
+
+        #resultsTable th,
+        #resultsTable td {
+            white-space: nowrap; /* Prevent text wrapping */
+        }
+
+        /* Style for the label */
+        .label-container {
+            margin-bottom: 10px;
+        }
+
+        /* Style for the date picker input */
+        #datepicker {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 150px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="table-container">
+        <h1>Test Results</h1>
+
+        <!-- Label for the date picker -->
+        <div class="label-container">
+            <label for="datepicker">Select a Date:</label>
+            <input type="text" id="datepicker" placeholder="Choose a date">
+        </div>
+
+        {% if results %}
+            <table id="resultsTable" class="display" border="1">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Test Number</th>
+                        <th>Subject</th>
+                        <th>Chapter</th>
+                        <th>Question</th>
+                        <th>Correct Answer</th>
+                        <th>User Answer</th>
+                        <th>Similarity</th>
+                        <th>Attempt Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in results|reverse %}
+                        <tr>
+                            <td>{{ result[11] }}</td>
+                            <td>Test {{ result[8] }}</td>                        
+                            <td>{{ result[9] }}</td>
+                            <td>{{ result[10] }}</td>
+                            <td>{{ result[2] }}</td>
+                            <td>{{ result[3] }}</td>
+                            <td>{{ result[4] }}</td>
+                            <td>{{ result[6] }}</td>
+                            <td>{{ result[5] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No test results available.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize flatpickr
+            flatpickr("#datepicker", {
+                dateFormat: "Y-m-d",
+                defaultDate: "today",
+                onChange: function (selectedDates, dateStr, instance) {
+                    // Add logic to filter the table based on the selected date
+                    // You can use the DataTables API to filter the table
+                    var table = $('#resultsTable').DataTable();
+                    table.columns(0).search(dateStr).draw();
+                }
+            });
+        
+            // Initialize DataTables with specific sorting configuration for the date column
+            $('#resultsTable').DataTable({
+                order: [[0, 'desc']], // Assuming the date column is the first column (index 0)
+                columnDefs: [
+                    { type: 'date', targets: 0 } // Assuming the date column is the first column (index 0)
+                ]
+            });
+        });
+        
+    </script>
+    <script src="static/assets/js/oldform.js"></script>
+</body>
+</html>

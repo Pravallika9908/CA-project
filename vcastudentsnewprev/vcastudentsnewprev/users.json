@@ -1,0 +1,47 @@
+{
+  "tharun12": {
+    "password": "1234",
+    "email": "tharun@gmail.com",
+    "mobile": "8019608211"
+  },
+  "kumar": {
+    "password": "1234",
+    "email": "tharun@gmail.com",
+    "mobile": "8019608211"
+  },
+  "kumar12": {
+    "password": "1234",
+    "email": "tharun@gmail.com",
+    "mobile": "8019608211"
+  },
+  "tharun1234": {
+    "password": "1234",
+    "email": "tharunv@gmail.com",
+    "mobile": "8019608212"
+  },
+  "tharun": {
+    "password": "12345",
+    "email": "tharunvk@gmail.com",
+    "mobile": "8019608214"
+  },
+  "abcd": {
+    "password": "1234",
+    "email": "abc@gmail.com",
+    "mobile": "123456"
+  },
+  "abcde": {
+    "password": "12344",
+    "email": "abcd@gmail.com",
+    "mobile": "12345"
+  },
+  "abcdf": {
+    "password": "12345",
+    "email": "abcf@gmail.com",
+    "mobile": "123458"
+  },
+  "tharun23": {
+    "password": "12345",
+    "email": "tharun12@gmail.com",
+    "mobile": "80196082"
+  }
+}
